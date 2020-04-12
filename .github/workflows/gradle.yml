@@ -45,7 +45,7 @@ jobs:
         # カスタム必要
         ECR_REPOSITORY: githubactions
         IMAGE_TAG: latest
-      working-directory: ./docker
+      # working-directory: ./docker
       run: |
         cp ./build/libs/*.jar ./docker/
         cd ./docker
