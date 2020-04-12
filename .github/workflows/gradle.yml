@@ -11,6 +11,7 @@ on:
 
 jobs:
   build:
+    # Host Runner
     runs-on: ubuntu-latest
     # Java Image
     steps:
@@ -23,8 +24,8 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build && ls -la ./build/libs/
-      # ls -la ./build/libs/
-  deloy:
+
+  build:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
@@ -36,4 +37,4 @@ jobs:
         S3_UPLOAD_BUCKET: ${{ secrets.S3_UPLOAD_BUCKET }}
       run: |
          aws s3 cp ./build/libs/*.jar s3://$S3_UPLOAD_BUCKET/ --quiet
- 
+      needs: build
