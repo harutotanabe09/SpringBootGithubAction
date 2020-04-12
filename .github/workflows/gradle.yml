@@ -35,4 +35,20 @@ jobs:
         S3_UPLOAD_BUCKET: ${{ secrets.S3_UPLOAD_BUCKET }}
       run: |
          aws s3 cp ./build/libs/*.jar s3://$S3_UPLOAD_BUCKET/ --quiet
-      needs: build
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+    - name: Build, tag, and push image to Amazon ECR
+      id: build-image
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        # カスタム必要
+        ECR_REPOSITORY: githubactions
+        IMAGE_TAG: latest
+      working-directory: ./docker
+      run: |
+        cp ../build/libs/*.jar ./
+        docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+        docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+
