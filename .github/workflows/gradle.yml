@@ -24,7 +24,6 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: ./gradlew build && ls -la ./build/libs/
-
   delpoy:
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
